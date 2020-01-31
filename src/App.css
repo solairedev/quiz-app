@@ -1,38 +1,117 @@
-.App {
-  text-align: center;
+:root{
+  font-family: 'Gotham SSm A', 'Gotham SSm B', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+  background: #f9f9f9;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+a{
+  color: #005eb8;
+  text-decoration: none;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+a:hover,
+a:focus{
+  text-decoration: underline;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.btn{
+  border: 2px solid gray;
+  background: white;
+  font-size: 18px;
+  padding: 11px 20px 9px;
+  line-height: 1;
+  border-radius: 2px;
+}
+.btn:hover,
+.btn:focus{
+  border-color: #005eb8;
+  cursor: pointer;
+}
+.btn--accent{
+  border-color: #005eb8;
+  background-color: #005eb8;
+  color: white;
+  font-weight: bold;
+}
+.btn--accent:hover,
+.btn--accent:focus{
+  border-color: #0054a5;
+  background: #0054a5;
+}
+.container{
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.quiz{
+  margin-top: 10%; 
+}
+.quiz__header{
+  display: flex; 
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  flex-direction: column;
+  background: #005eb8;
+  padding: 20px 10px;
+  border-radius: 5px;
+
+}
+.quiz__meta{
+  text-align: center;  background: white;
+  color: black;
+  font-weight: bold;
+  padding: 5px 10px;
+  display: inline-block;
+  margin: 0;
+  line-height: 1;
+}
+.quiz__title{
+  font-weight: bold;
+  text-align: center;
+  font-size: 21px;
+  color: white;
+  margin: 0 auto 10px;
+}
+.quiz__answer-list{
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  margin-left: -5px;
+  margin-right: -5px;
+  margin-bottom: 10px;
+}
+.quiz__answer{
+  /* border-color: #005eb8; */
+
+  margin-bottom: 10px; 
+  margin-right: 2.5px;
+  margin-left: 2.5px;
+
+  display: block;
+  flex: 1 1 305px;
+
+  translate: all 0.2s ease-in-out;
+}
+.quiz__answer--danger{
+  border-color: #b8005f !important;
+  background: #b8005f ;
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.quiz__answer--success{
+  border-color: #5fb800 !important;
+  background: #5fb800 ;
+  color: white;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.quiz__action{
+  display: flex;
+  justify-content: center;
+}
+.quiz__action-btn{
+  padding-top: 7px;
+  padding-bottom: 6px;
+  font-size: 16px;
+}
+.footer{
+  margin-top: 20px;
+  opacity: 1;
+  color: gray;
+  text-align: center;
+  font-size: 14px;
 }
