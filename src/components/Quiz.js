@@ -46,25 +46,33 @@ class Quiz extends Component {
       <div className="quiz">
         <div className="quiz__wrap">
           <div className="quiz__header">
-            <p className="quiz__title">{!isLoading && question}</p>
+            {isLoading ? (
+              <p className="quiz__title quiz__title--loading">Loading</p>
+            ) : (
+              <>
+                <p className="quiz__title">{question}</p>
 
-            <p className="quiz__meta">Question {currentQuestionNumber}/10</p>
+                <p className="quiz__meta">
+                  Question {currentQuestionNumber}/10
+                </p>
+              </>
+            )}
           </div>
-          <div className="quiz__answer-list">
-            {!isLoading &&
-              anwears.map(el => (
+          {!isLoading && (
+            <div className="quiz__answer-list">
+              {anwears.map(el => (
                 <button key={el} className="quiz__answer btn">
                   {el}
                 </button>
               ))}
-
-            {/* <button className="quiz__answer quiz__answer--danger btn"> */}
-            {/*   background-color */}
-            {/* </button> */}
-            {/* <button className="quiz__answer quiz__answer--success btn"> */}
-            {/*   bgColor */}
-            {/* </button> */}
-          </div>
+            </div>
+          )}
+          {/* <button className="quiz__answer quiz__answer--danger btn"> */}
+          {/*   background-color */}
+          {/* </button> */}
+          {/* <button className="quiz__answer quiz__answer--success btn"> */}
+          {/*   bgColor */}
+          {/* </button> */}
           {answerIsSelected && (
             <div className="quiz__action">
               <button className="btn quiz__action-btn btn--accent">Next</button>
