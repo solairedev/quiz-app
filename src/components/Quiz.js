@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import shuffle from './../utilities/array';
 import decode_text from './../utilities/decode';
+import QuizAnswer from './QuizAnswer';
 
 class Quiz extends Component {
   constructor(props) {
@@ -10,7 +11,11 @@ class Quiz extends Component {
       questionsList: null,
       isLoading: true,
       answerIsSelected: false,
+      userErrorCount: 0,
     };
+
+    this.selectAnswer = this.selectAnswer.bind(this);
+    this.nextStep = this.nextStep.bind(this);
   }
   componentDidMount() {
     fetch('https://opentdb.com/api.php?amount=10')
@@ -19,6 +24,22 @@ class Quiz extends Component {
         this.setState({questionsList: response.results, isLoading: false});
       });
   }
+  selectAnswer(valid, e) {
+    if (!this.state.answerIsSelected) {
+      this.setState({
+        answerIsSelected: true,
+        userErrorCount : valid ? this.state.userErrorCount : this.state.userErrorCount - 1
+      });
+    }
+  }
+  nextStep(){
+    if (this.state.currentQuestionNumber < 9) {
+      this.setState({
+         currentQuestionNumber: this.state.currentQuestionNumber + 1,
+         answerIsSelected : false,
+      });
+    }
+  }
   render() {
     const {
       questionsList,
@@ -26,6 +47,9 @@ class Quiz extends Component {
       isLoading,
       answerIsSelected,
     } = this.state;
+
+    const userQuestionNumber = currentQuestionNumber + 1
+
     const incorrect_answers = isLoading
       ? []
       : questionsList[currentQuestionNumber].incorrect_answers;
@@ -33,11 +57,12 @@ class Quiz extends Component {
       ? null
       : questionsList[currentQuestionNumber].correct_answer;
 
-    if (!isLoading) {
+    if (!isLoading && !answerIsSelected) {
       incorrect_answers.push(correct_answer);
+      shuffle(incorrect_answers);
     }
 
-    const anwears = isLoading ? [] : shuffle(incorrect_answers);
+    const anwers = isLoading ? [] : incorrect_answers;
     const question = isLoading
       ? null
       : decode_text(questionsList[currentQuestionNumber].question);
@@ -53,29 +78,27 @@ class Quiz extends Component {
                 <p className="quiz__title">{question}</p>
 
                 <p className="quiz__meta">
-                  Question {currentQuestionNumber}/10
+                  Question {userQuestionNumber}/10
                 </p>
               </>
             )}
           </div>
           {!isLoading && (
             <div className="quiz__answer-list">
-              {anwears.map(el => (
-                <button key={el} className="quiz__answer btn">
-                  {el}
-                </button>
+              {anwers.map(el => (
+                <QuizAnswer
+                  selectAnswerAction={this.selectAnswer}
+                  text={el}
+                  valid={correct_answer}
+                  isSelected={answerIsSelected}
+                  key={el + currentQuestionNumber}
+                />
               ))}
             </div>
           )}
-          {/* <button className="quiz__answer quiz__answer--danger btn"> */}
-          {/*   background-color */}
-          {/* </button> */}
-          {/* <button className="quiz__answer quiz__answer--success btn"> */}
-          {/*   bgColor */}
-          {/* </button> */}
           {answerIsSelected && (
             <div className="quiz__action">
-              <button className="btn quiz__action-btn btn--accent">Next</button>
+              <button onClick={this.nextStep} className="btn quiz__action-btn btn--accent">Next</button>
             </div>
           )}
         </div>
