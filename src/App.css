@@ -82,17 +82,6 @@ a:focus {
   width: 1em;
   text-align: left;
 }
-@keyframes ellipsis {
-  0% {
-    content: '.';
-  }
-  33% {
-    content: '..';
-  }
-  66% {
-    content: '...';
-  }
-}
 .quiz__answer-list {
   display: flex;
   flex-wrap: wrap;
@@ -126,6 +115,7 @@ a:focus {
 .quiz__action {
   display: flex;
   justify-content: center;
+  animation: fade 0.2s;
 }
 .quiz__action-btn {
   padding-top: 7px;
@@ -138,4 +128,76 @@ a:focus {
   color: gray;
   text-align: center;
   font-size: 14px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.2);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  animation: fade 0.2s;
+}
+.modal--active {
+  display: block;
+}
+.modal__content {
+  width: 600px;
+  max-width: 90vw;
+  background: white;
+  padding: 15px 10px;
+  border-radius: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10%;
+
+  font-size: 20px;
+  animation: fadeDownModal;
+}
+.text-center {
+  text-align: center;
+}
+.modal__title {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0;
+  line-height: 1;
+}
+.modal__action {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes ellipsis {
+  0% {
+    content: '.';
+  }
+  33% {
+    content: '..';
+  }
+  66% {
+    content: '...';
+  }
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeDownModal {
+  0% {
+    top: 5%;
+  }
+  100% {
+    top: 10%;
+  }
 }
