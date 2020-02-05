@@ -4,8 +4,6 @@ import decode_text from './../utilities/decode';
 import QuizAnswer from './QuizAnswer';
 import QuizResult from './QuizResult';
 
-const questionCount = 10;
-
 class Quiz extends Component {
   constructor(props) {
     super(props);
@@ -16,9 +14,20 @@ class Quiz extends Component {
       answerIsSelected: false,
       userErrorCount: 0,
       viewResult: false,
+
+      amount: this.props.match.params.amount
+        ? this.props.match.params.amount
+        : 10,
+      category: this.props.match.params.category
+        ? this.props.match.params.category
+        : null,
+      difficulty: this.props.match.params.difficulty
+        ? this.props.match.params.difficulty
+        : null,
     };
 
     this.selectAnswer = this.selectAnswer.bind(this);
+    this.startQuiz = this.startQuiz.bind(this);
     this.nextStep = this.nextStep.bind(this);
     this.playAgain = this.playAgain.bind(this);
   }
@@ -26,7 +35,15 @@ class Quiz extends Component {
     this.startQuiz();
   }
   startQuiz() {
-    fetch('https://opentdb.com/api.php?amount='+questionCount)
+    let url = '?amount=' + this.state.amount;
+    if (this.state.category !== 'any') {
+      url += '&category=' + this.state.category;
+    }
+    if (this.state.difficulty !== 'any') {
+      url += '&difficulty=' + this.state.difficulty;
+    }
+
+    fetch('https://opentdb.com/api.php' + url)
       .then(response => response.json())
       .then(response => {
         this.setState({questionsList: response.results, isLoading: false});
@@ -43,7 +60,7 @@ class Quiz extends Component {
     }
   }
   nextStep() {
-    const questionCountFromNull = questionCount -1
+    const questionCountFromNull = this.state.amount - 1;
     if (this.state.currentQuestionNumber < questionCountFromNull) {
       this.setState({
         currentQuestionNumber: this.state.currentQuestionNumber + 1,
@@ -78,6 +95,7 @@ class Quiz extends Component {
       answerIsSelected,
       userErrorCount,
       viewResult,
+      amount,
     } = this.state;
 
     const userQuestionNumber = currentQuestionNumber + 1;
@@ -110,7 +128,9 @@ class Quiz extends Component {
                 <>
                   <p className="quiz__title">{question}</p>
 
-                  <p className="quiz__meta">Question {userQuestionNumber}/10</p>
+                  <p className="quiz__meta">
+                    Question {userQuestionNumber}/{amount}
+                  </p>
                 </>
               )}
             </div>
@@ -128,7 +148,7 @@ class Quiz extends Component {
               </div>
             )}
             {answerIsSelected && (
-              <div className="quiz__action">
+              <div className="text-center">
                 <button
                   onClick={this.nextStep}
                   className="btn quiz__action-btn btn--accent">
@@ -143,6 +163,7 @@ class Quiz extends Component {
             modalState={viewResult}
             errorsCount={userErrorCount}
             playAgainAction={this.playAgain}
+            amount={amount}
           />
         )}
       </>

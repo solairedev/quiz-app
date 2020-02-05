@@ -13,8 +13,6 @@ class QuizAnswer extends Component {
   handleClick(){
     if (!this.props.isSelected) {
       var isValid = this.props.text === this.props.valid ? true : false
-      console.log(this.props.text); 
-      console.log(this.props.valid); 
       this.setState({
         classList : isValid ? 'quiz__answer--success' : 'quiz__answer--danger'
       }, () => {

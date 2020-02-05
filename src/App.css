@@ -1,3 +1,6 @@
+*{
+  box-sizing: border-box;
+}
 :root {
   font-family: 'Gotham SSm A', 'Gotham SSm B', system-ui, -apple-system,
     BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
@@ -13,7 +16,7 @@ a:focus {
   text-decoration: underline;
 }
 .btn {
-  border: 2px solid gray;
+  border: 2px solid lightgray;
   background: white;
   font-size: 18px;
   padding: 11px 20px 9px;
@@ -172,6 +175,43 @@ a:focus {
   justify-content: center;
 }
 
+
+.paper{
+  background: white;
+  max-width: 400px;
+  border-radius: 3px;
+  padding: 20px 30px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10%;
+  font-size: 18px;
+  border: 1px solid lightgray;
+}
+.paper__title{
+  font-weight: bold;
+  font-size: 30px;
+  margin-bottom: 0;
+}
+.paper label{
+  font-style: italic;
+  display: block;
+  font-size: 16px;
+}
+input,select{
+  display: block;
+  margin-top: 5px;
+  border: 1px solid lightgray;
+  padding: 10px 10px;
+  font-size: 18px;
+  border-radius: 3px;
+  background: white;
+  width: 100%;
+  margin-bottom: 15px;
+}
+.text-center{
+  text-align: center;
+}
+
 @keyframes ellipsis {
   0% {
     content: '.';
@@ -201,3 +241,4 @@ a:focus {
     top: 10%;
   }
 }
+

@@ -1,23 +1,31 @@
 import React from 'react';
 import Quiz from './components/Quiz';
+import Settings from './components/Setting';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import './App.css';
 
 function App() {
   return (
-    <div className="container">
-      <Quiz />
-      <footer className="footer">
-        Questions source:{' '}
-        <a
-          className="App-link"
-          href="https://opentdb.com/"
-          target="_blank"
-          rel="noopener noreferrer">
-          Open Trivia Database
-        </a>
-      </footer>
-    </div>
+    <Router>
+      <div className="container">
+        <Switch>
+          <Route path="/" component={Settings} exact />
+          <Route path="/start/:difficulty/:category/:amount" component={Quiz}/>
+        </Switch>
+
+        <footer className="footer">
+          Questions source:{' '}
+          <a
+            className="App-link"
+            href="https://opentdb.com/"
+            target="_blank"
+            rel="noopener noreferrer">
+            Open Trivia Database
+          </a>
+        </footer>
+      </div>
+    </Router>
   );
 }
 
