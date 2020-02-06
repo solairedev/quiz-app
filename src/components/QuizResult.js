@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withRouter} from 'react-router';
 
 class QuizResult extends Component {
   constructor(props) {
@@ -10,9 +11,16 @@ class QuizResult extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.redirectToSettingsPage = this.redirectToSettingsPage.bind(this);
   }
   handleClick() {
     this.props.playAgainAction();
+  }
+  redirectToSettingsPage() {
+    this.props.history.push({
+      pathname: '/',
+      state: {title: 'Settings'},
+    });
   }
   render() {
     const {errorsCount, amount} = this.state;
@@ -22,10 +30,20 @@ class QuizResult extends Component {
       <div className={'modal ' + modalState}>
         <div className="modal__content">
           <p className="modal__title">Result</p>
-          <p className="text-center">Score: {score} / {amount}</p>
+          <p className="text-center">
+            Score: {score} / {amount}
+          </p>
           <div className="modal__action">
-            <button onClick={this.handleClick} className="btn btn--accent">
+            <button
+              onClick={this.handleClick}
+              className="btn modal__action-btn btn--accent">
               Play again
+            </button>
+
+            <button
+              onClick={this.redirectToSettingsPage}
+              className="modal__action-btn btn">
+              Settings
             </button>
           </div>
         </div>
@@ -34,4 +52,6 @@ class QuizResult extends Component {
   }
 }
 
-export default QuizResult;
+const QuizResultWithRouter = withRouter(QuizResult);
+
+export default QuizResultWithRouter;

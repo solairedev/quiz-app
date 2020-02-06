@@ -5,7 +5,11 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: this.props.title ? this.props.title : 'Welcome!',
+      title: this.props.location.state
+        ? this.props.location.state.title
+          ? this.props.location.state.title
+          : 'Welcome!'
+        : 'Welcome!',
       amount: 10,
       category: 'any',
       difficulty: 'any',
@@ -15,7 +19,14 @@ class Settings extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
   formSubmit() {
-    this.props.history.push('/start/'+ this.state.difficulty + '/' + this.state.category + '/' + this.state.amount );
+    this.props.history.push(
+      '/start/' +
+        this.state.difficulty +
+        '/' +
+        this.state.category +
+        '/' +
+        this.state.amount,
+    );
   }
   handleInputChange(event) {
     const target = event.target;
