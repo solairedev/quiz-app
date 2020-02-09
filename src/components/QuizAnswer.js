@@ -5,25 +5,28 @@ class QuizAnswer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      classList: ''
+      classList: this.props.status
     };
 
     this.handleClick = this.handleClick.bind(this);
   }
-  handleClick(){
-    if (!this.props.isSelected) {
-      var isValid = this.props.text === this.props.valid ? true : false
-      this.setState({
-        classList : isValid ? 'quiz__answer--success' : 'quiz__answer--danger'
-      }, () => {
-        this.props.selectAnswerAction(isValid)
-      });
-    }
+  handleClick() {
+    this.props.selectAnswerAction(this.props.text);
+  }
+  componentDidUpdate(nextProps) {
+   const { status } = this.props
+   if (nextProps.status !== status) {
+    this.setState({
+      classList : status
+    });
+   }
   }
   render() {
-    const { classList } = this.state
+    const {classList} = this.state;
     return (
-      <button onClick={this.handleClick} className={'quiz__answer btn ' + classList}>
+      <button
+        onClick={this.handleClick}
+        className={'quiz__answer btn ' + classList}>
         {decode_text(this.props.text)}
       </button>
     );

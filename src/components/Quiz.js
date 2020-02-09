@@ -13,7 +13,9 @@ class Quiz extends Component {
       isLoading: true,
       answerIsSelected: false,
       userErrorCount: 0,
+      userAnswer: null,
       viewResult: false,
+      // detailedResult: [],
 
       amount: this.props.match.params.amount
         ? this.props.match.params.amount
@@ -49,10 +51,22 @@ class Quiz extends Component {
         this.setState({questionsList: response.results, isLoading: false});
       });
   }
-  selectAnswer(valid, e) {
+  selectAnswer(text, e) {
     if (!this.state.answerIsSelected) {
+      // let thisQuestionResult = this.state.questionsList[
+      //   this.state.currentQuestionNumber
+      // ];
+      // thisQuestionResult['userAnswer'] = text;
+
+      let valid =
+        this.state.questionsList[this.state.currentQuestionNumber]
+          .correct_answer === text
+          ? true
+          : false;
+
       this.setState({
         answerIsSelected: true,
+        userAnswer: text,
         userErrorCount: valid
           ? this.state.userErrorCount
           : this.state.userErrorCount + 1,
@@ -65,6 +79,7 @@ class Quiz extends Component {
       this.setState({
         currentQuestionNumber: this.state.currentQuestionNumber + 1,
         answerIsSelected: false,
+        userAnswer: null,
       });
     } else {
       this.setState({
@@ -81,6 +96,7 @@ class Quiz extends Component {
         answerIsSelected: false,
         userErrorCount: 0,
         viewResult: false,
+        userAnswer: null,
       },
       () => {
         this.startQuiz();
@@ -96,6 +112,7 @@ class Quiz extends Component {
       userErrorCount,
       viewResult,
       amount,
+      userAnswer,
     } = this.state;
 
     const userQuestionNumber = currentQuestionNumber + 1;
@@ -140,8 +157,13 @@ class Quiz extends Component {
                   <QuizAnswer
                     selectAnswerAction={this.selectAnswer}
                     text={el}
-                    valid={correct_answer}
-                    isSelected={answerIsSelected}
+                    status={
+                      el === userAnswer
+                        ? el === correct_answer
+                          ? 'quiz__answer--success'
+                          : 'quiz__answer--danger'
+                        : 'quiz__answer--unknown'
+                    }
                     key={el + currentQuestionNumber}
                   />
                 ))}

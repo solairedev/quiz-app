@@ -12,6 +12,7 @@ class QuizResult extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.redirectToSettingsPage = this.redirectToSettingsPage.bind(this);
+    this.redirectToDetailResult = this.redirectToSettingsPage.bind(this);
   }
   handleClick() {
     this.props.playAgainAction();
@@ -22,16 +23,26 @@ class QuizResult extends Component {
       state: {title: 'Settings'},
     });
   }
+  // redirectToDetailResult(){
+  //   this.props.history.push({
+  //     pathname: '/detailed-results',
+  //     state: {questionResults: 'Settings'},
+  //   });
+  // }
   render() {
     const {errorsCount, amount} = this.state;
     const modalState = this.state.modalState ? 'modal--active' : '';
     const score = amount - errorsCount;
+    const percentScore = Math.trunc((score / amount) * 100); 
     return (
       <div className={'modal ' + modalState}>
         <div className="modal__content">
           <p className="modal__title">Result</p>
           <p className="text-center">
             Score: {score} / {amount}
+          </p>
+          <p className="text-center">
+            Percent Score: {percentScore}%
           </p>
           <div className="modal__action">
             <button
@@ -45,6 +56,12 @@ class QuizResult extends Component {
               className="modal__action-btn btn">
               Settings
             </button>
+
+            {/* <button */}
+            {/*   onClick={this.redirectToDetailResult} */}
+            {/*   className="modal__action-btn btn"> */}
+            {/*   Detailed result */}
+            {/* </button> */}
           </div>
         </div>
       </div>
