@@ -15,7 +15,6 @@ class Quiz extends Component {
       userErrorCount: 0,
       userAnswer: null,
       viewResult: false,
-      // detailedResult: [],
 
       amount: this.props.match.params.amount
         ? this.props.match.params.amount
@@ -32,6 +31,7 @@ class Quiz extends Component {
     this.startQuiz = this.startQuiz.bind(this);
     this.nextStep = this.nextStep.bind(this);
     this.playAgain = this.playAgain.bind(this);
+    this.redirectToDetailedResult = this.redirectToDetailedResult.bind(this)
   }
   componentDidMount() {
     this.startQuiz();
@@ -53,19 +53,18 @@ class Quiz extends Component {
   }
   selectAnswer(text, e) {
     if (!this.state.answerIsSelected) {
-      // let thisQuestionResult = this.state.questionsList[
-      //   this.state.currentQuestionNumber
-      // ];
-      // thisQuestionResult['userAnswer'] = text;
+      const {currentQuestionNumber} = this.state;
+      const questionsListWithUserAnswer = this.state.questionsList.slice();
+      questionsListWithUserAnswer[currentQuestionNumber].userAnswer = text;
 
       let valid =
-        this.state.questionsList[this.state.currentQuestionNumber]
-          .correct_answer === text
+        this.state.questionsList[currentQuestionNumber].correct_answer === text
           ? true
           : false;
 
       this.setState({
         answerIsSelected: true,
+        questionsList: questionsListWithUserAnswer,
         userAnswer: text,
         userErrorCount: valid
           ? this.state.userErrorCount
@@ -86,6 +85,17 @@ class Quiz extends Component {
         viewResult: true,
       });
     }
+  }
+  redirectToDetailedResult() {
+    this.props.history.push({
+      pathname: '/detailed-result',
+      state: {
+        amount: this.state.amount,
+        category: this.state.category,
+        difficulty: this.state.difficulty,
+        questionsResult: this.state.questionsList,
+      },
+    });
   }
   playAgain() {
     this.setState(
@@ -138,7 +148,7 @@ class Quiz extends Component {
       <>
         <div className="quiz">
           <div className="quiz__wrap">
-            <div className="quiz__header">
+            <div className="quiz__header quiz__header">
               {isLoading ? (
                 <p className="quiz__title quiz__title--loading">Loading</p>
               ) : (
@@ -157,6 +167,7 @@ class Quiz extends Component {
                   <QuizAnswer
                     selectAnswerAction={this.selectAnswer}
                     text={el}
+                    isDisabled={false}
                     status={
                       el === userAnswer
                         ? el === correct_answer
@@ -182,6 +193,7 @@ class Quiz extends Component {
         </div>
         {viewResult && (
           <QuizResult
+            redirectToDetailedResultAction={this.redirectToDetailedResult}
             modalState={viewResult}
             errorsCount={userErrorCount}
             playAgainAction={this.playAgain}

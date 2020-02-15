@@ -11,7 +11,9 @@ class QuizAnswer extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick() {
-    this.props.selectAnswerAction(this.props.text);
+    if (!this.props.isDisabled) {
+      this.props.selectAnswerAction(this.props.text);
+    }
   }
   componentDidUpdate(nextProps) {
    const { status } = this.props
@@ -23,9 +25,11 @@ class QuizAnswer extends Component {
   }
   render() {
     const {classList} = this.state;
+    const { isDisabled } = this.props
     return (
       <button
         onClick={this.handleClick}
+        disabled={isDisabled}
         className={'quiz__answer btn ' + classList}>
         {decode_text(this.props.text)}
       </button>

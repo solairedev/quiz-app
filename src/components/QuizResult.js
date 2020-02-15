@@ -12,7 +12,7 @@ class QuizResult extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.redirectToSettingsPage = this.redirectToSettingsPage.bind(this);
-    this.redirectToDetailResult = this.redirectToSettingsPage.bind(this);
+    this.redirectToDetailedResult = this.redirectToDetailedResult.bind(this);
   }
   handleClick() {
     this.props.playAgainAction();
@@ -23,12 +23,9 @@ class QuizResult extends Component {
       state: {title: 'Settings'},
     });
   }
-  // redirectToDetailResult(){
-  //   this.props.history.push({
-  //     pathname: '/detailed-results',
-  //     state: {questionResults: 'Settings'},
-  //   });
-  // }
+  redirectToDetailedResult(){
+    this.props.redirectToDetailedResultAction()
+  }
   render() {
     const {errorsCount, amount} = this.state;
     const modalState = this.state.modalState ? 'modal--active' : '';
@@ -57,11 +54,11 @@ class QuizResult extends Component {
               Settings
             </button>
 
-            {/* <button */}
-            {/*   onClick={this.redirectToDetailResult} */}
-            {/*   className="modal__action-btn btn"> */}
-            {/*   Detailed result */}
-            {/* </button> */}
+            <button
+              onClick={this.redirectToDetailedResult}
+              className="modal__action-btn btn">
+              Detailed result
+            </button>
           </div>
         </div>
       </div>
