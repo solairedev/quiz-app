@@ -12,7 +12,6 @@ class Quiz extends Component {
       questionsList: null,
       isLoading: true,
       answerIsSelected: false,
-      userErrorCount: 0,
       userAnswer: null,
       viewResult: false,
 
@@ -57,18 +56,10 @@ class Quiz extends Component {
       const questionsListWithUserAnswer = this.state.questionsList.slice();
       questionsListWithUserAnswer[currentQuestionNumber].userAnswer = text;
 
-      let valid =
-        this.state.questionsList[currentQuestionNumber].correct_answer === text
-          ? true
-          : false;
-
       this.setState({
         answerIsSelected: true,
         questionsList: questionsListWithUserAnswer,
         userAnswer: text,
-        userErrorCount: valid
-          ? this.state.userErrorCount
-          : this.state.userErrorCount + 1,
       });
     }
   }
@@ -104,7 +95,6 @@ class Quiz extends Component {
         questionsList: null,
         isLoading: true,
         answerIsSelected: false,
-        userErrorCount: 0,
         viewResult: false,
         userAnswer: null,
       },
@@ -119,7 +109,6 @@ class Quiz extends Component {
       currentQuestionNumber,
       isLoading,
       answerIsSelected,
-      userErrorCount,
       viewResult,
       amount,
       userAnswer,
@@ -145,7 +134,7 @@ class Quiz extends Component {
       : decode_text(questionsList[currentQuestionNumber].question);
 
     return (
-      <>
+      <div>
         <div className="quiz">
           <div className="quiz__wrap">
             <div className="quiz__header quiz__header">
@@ -194,13 +183,13 @@ class Quiz extends Component {
         {viewResult && (
           <QuizResult
             redirectToDetailedResultAction={this.redirectToDetailedResult}
+            questionsResult={questionsList}
             modalState={viewResult}
-            errorsCount={userErrorCount}
             playAgainAction={this.playAgain}
             amount={amount}
           />
         )}
-      </>
+      </div>
     );
   }
 }

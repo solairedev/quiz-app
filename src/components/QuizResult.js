@@ -5,8 +5,8 @@ class QuizResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      questionsResult: this.props.questionsResult,
       modalState: this.props.modalState,
-      errorsCount: this.props.errorsCount,
       amount: this.props.amount,
     };
 
@@ -27,10 +27,16 @@ class QuizResult extends Component {
     this.props.redirectToDetailedResultAction()
   }
   render() {
-    const {errorsCount, amount} = this.state;
+    const {amount, questionsResult} = this.state;
     const modalState = this.state.modalState ? 'modal--active' : '';
-    const score = amount - errorsCount;
-    const percentScore = Math.trunc((score / amount) * 100); 
+    var score = 0;
+    questionsResult.forEach((item, key) => {
+      if (item.correct_answer === item.userAnswer) {
+        score += 1;
+      }
+    });
+    const percentScore = Math.trunc((score / amount) * 100);
+
     return (
       <div className={'modal ' + modalState}>
         <div className="modal__content">
