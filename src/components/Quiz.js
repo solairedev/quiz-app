@@ -47,6 +47,16 @@ class Quiz extends Component {
     fetch('https://opentdb.com/api.php' + url)
       .then(response => response.json())
       .then(response => {
+        // Added right answer in answer list and shuffle it
+        response.results.forEach(el =>{
+          
+          // safely copies deeply nested objects/arrays!
+          // let answers = JSON.parse(JSON.stringify(el.incorrect_answers));
+          
+          let answers = el.incorrect_answers.slice()
+          answers.push(el.correct_answer)
+          el.incorrect_answers = shuffle(answers)
+        })
         this.setState({questionsList: response.results, isLoading: false});
       });
   }
@@ -123,12 +133,6 @@ class Quiz extends Component {
       ? null
       : questionsList[currentQuestionNumber].correct_answer;
 
-    if (!isLoading && !answerIsSelected) {
-      incorrect_answers.push(correct_answer);
-      shuffle(incorrect_answers);
-    }
-
-    const anwers = isLoading ? [] : incorrect_answers;
     const question = isLoading
       ? null
       : decode_text(questionsList[currentQuestionNumber].question);
@@ -152,7 +156,7 @@ class Quiz extends Component {
             </div>
             {!isLoading && (
               <div className="quiz__answer-list">
-                {anwers.map(el => (
+                {incorrect_answers.map(el => (
                   <QuizAnswer
                     selectAnswerAction={this.selectAnswer}
                     text={el}
