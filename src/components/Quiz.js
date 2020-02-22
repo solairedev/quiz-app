@@ -1,86 +1,42 @@
 import React, {Component} from 'react';
-import shuffle from './../utilities/array';
 import decode_text from './../utilities/decode';
 import QuizAnswer from './QuizAnswer';
 import QuizResult from './QuizResult';
+import {connect} from 'react-redux';
+import {
+  fetchQuestionList,
+  setQuestionsList,
+  nextQuestion,
+  resetGame,
+} from './../actions/questions';
 
 class Quiz extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentQuestionNumber: 0,
-      questionsList: null,
-      isLoading: true,
-      answerIsSelected: false,
-      userAnswer: null,
       viewResult: false,
-
-      amount: this.props.match.params.amount
-        ? this.props.match.params.amount
-        : 10,
-      category: this.props.match.params.category
-        ? this.props.match.params.category
-        : null,
-      difficulty: this.props.match.params.difficulty
-        ? this.props.match.params.difficulty
-        : null,
     };
 
-    this.selectAnswer = this.selectAnswer.bind(this);
-    this.startQuiz = this.startQuiz.bind(this);
     this.nextStep = this.nextStep.bind(this);
     this.playAgain = this.playAgain.bind(this);
-    this.redirectToDetailedResult = this.redirectToDetailedResult.bind(this)
+    this.startQuiz = this.startQuiz.bind(this);
+    this.redirectToDetailedResult = this.redirectToDetailedResult.bind(this);
   }
   componentDidMount() {
     this.startQuiz();
   }
   startQuiz() {
-    let url = '?amount=' + this.state.amount;
-    if (this.state.category !== 'any') {
-      url += '&category=' + this.state.category;
-    }
-    if (this.state.difficulty !== 'any') {
-      url += '&difficulty=' + this.state.difficulty;
-    }
-
-    fetch('https://opentdb.com/api.php' + url)
-      .then(response => response.json())
-      .then(response => {
-        // Added right answer in answer list and shuffle it
-        response.results.forEach(el =>{
-          
-          // safely copies deeply nested objects/arrays!
-          // let answers = JSON.parse(JSON.stringify(el.incorrect_answers));
-          
-          let answers = el.incorrect_answers.slice()
-          answers.push(el.correct_answer)
-          el.incorrect_answers = shuffle(answers)
-        })
-        this.setState({questionsList: response.results, isLoading: false});
-      });
-  }
-  selectAnswer(text, e) {
-    if (!this.state.answerIsSelected) {
-      const {currentQuestionNumber} = this.state;
-      const questionsListWithUserAnswer = this.state.questionsList.slice();
-      questionsListWithUserAnswer[currentQuestionNumber].userAnswer = text;
-
-      this.setState({
-        answerIsSelected: true,
-        questionsList: questionsListWithUserAnswer,
-        userAnswer: text,
-      });
-    }
+    this.props.resetGameAction();
+    this.props.fetchQuestionListAction();
   }
   nextStep() {
-    const questionCountFromNull = this.state.amount - 1;
-    if (this.state.currentQuestionNumber < questionCountFromNull) {
-      this.setState({
-        currentQuestionNumber: this.state.currentQuestionNumber + 1,
-        answerIsSelected: false,
-        userAnswer: null,
-      });
+    if (
+      this.props.questions.currentQuestionNumber <
+      this.props.questions.questions.length - 1
+    ) {
+      this.props.nextQuestionAction(
+        this.props.questions.currentQuestionNumber + 1,
+      );
     } else {
       this.setState({
         viewResult: true,
@@ -90,23 +46,12 @@ class Quiz extends Component {
   redirectToDetailedResult() {
     this.props.history.push({
       pathname: '/detailed-result',
-      state: {
-        amount: this.state.amount,
-        category: this.state.category,
-        difficulty: this.state.difficulty,
-        questionsResult: this.state.questionsList,
-      },
     });
   }
   playAgain() {
     this.setState(
       {
-        currentQuestionNumber: 0,
-        questionsList: null,
-        isLoading: true,
-        answerIsSelected: false,
         viewResult: false,
-        userAnswer: null,
       },
       () => {
         this.startQuiz();
@@ -114,65 +59,58 @@ class Quiz extends Component {
     );
   }
   render() {
-    const {
-      questionsList,
-      currentQuestionNumber,
-      isLoading,
-      answerIsSelected,
-      viewResult,
-      amount,
-      userAnswer,
-    } = this.state;
+    const isLoading = this.props.questions.questions.length > 1 ? false : true;
+
+    if (isLoading) {
+      return (
+        <div className="quiz">
+          <div className="quiz__wrap">
+            <div className="quiz__header quiz__header">
+              <p className="quiz__title quiz__title--loading">Loading</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const {viewResult} = this.state;
+
+    const amount = this.props.questions.questions.length;
+
+    const questionsList = this.props.questions.questions;
+
+    const {currentQuestionNumber} = this.props.questions;
 
     const userQuestionNumber = currentQuestionNumber + 1;
 
-    const incorrect_answers = isLoading
-      ? []
-      : questionsList[currentQuestionNumber].incorrect_answers;
-    const correct_answer = isLoading
-      ? null
-      : questionsList[currentQuestionNumber].correct_answer;
+    const answers = questionsList[currentQuestionNumber].incorrect_answers;
 
-    const question = isLoading
-      ? null
-      : decode_text(questionsList[currentQuestionNumber].question);
+    const question = decode_text(questionsList[currentQuestionNumber].question);
+
+    const answerIsSelected = questionsList[currentQuestionNumber].userAnswer
+      ? true
+      : false;
 
     return (
       <div>
         <div className="quiz">
           <div className="quiz__wrap">
             <div className="quiz__header quiz__header">
-              {isLoading ? (
-                <p className="quiz__title quiz__title--loading">Loading</p>
-              ) : (
-                <>
-                  <p className="quiz__title">{question}</p>
+              <p className="quiz__title">{question}</p>
 
-                  <p className="quiz__meta">
-                    Question {userQuestionNumber}/{amount}
-                  </p>
-                </>
-              )}
+              <p className="quiz__meta">
+                Question {userQuestionNumber}/{amount}
+              </p>
             </div>
-            {!isLoading && (
-              <div className="quiz__answer-list">
-                {incorrect_answers.map(el => (
-                  <QuizAnswer
-                    selectAnswerAction={this.selectAnswer}
-                    text={el}
-                    isDisabled={false}
-                    status={
-                      el === userAnswer
-                        ? el === correct_answer
-                          ? 'quiz__answer--success'
-                          : 'quiz__answer--danger'
-                        : 'quiz__answer--unknown'
-                    }
-                    key={el + currentQuestionNumber}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="quiz__answer-list">
+              {answers.map(el => (
+                <QuizAnswer
+                  key={el + currentQuestionNumber}
+                  text={el}
+                  isDisabled={false}
+                />
+              ))}
+            </div>
             {answerIsSelected && (
               <div className="text-center">
                 <button
@@ -186,15 +124,34 @@ class Quiz extends Component {
         </div>
         {viewResult && (
           <QuizResult
-            redirectToDetailedResultAction={this.redirectToDetailedResult}
+            playAgainAction={this.playAgain}
             questionsResult={questionsList}
             modalState={viewResult}
-            playAgainAction={this.playAgain}
-            amount={amount}
           />
         )}
       </div>
     );
   }
 }
-export default Quiz;
+
+const mapStateToProps = store => {
+  return {
+    settings: store.settings,
+    questions: store.questions,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchQuestionListAction: () => dispatch(fetchQuestionList()),
+    resetGameAction: () => dispatch(resetGame()),
+    nextQuestionAction: questionNumber =>
+      dispatch(nextQuestion(questionNumber)),
+    setQuestionsListAction: list => dispatch(setQuestionsList(list)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Quiz);

@@ -3,8 +3,8 @@ import Quiz from './components/Quiz';
 import Settings from './components/Setting';
 import QuizDetailedResult from './components/QuizDetailedResult';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-
 import './App.css';
+
 
 function App() {
   return (
@@ -12,8 +12,8 @@ function App() {
       <div className="container">
         <Switch>
           <Route path="/" component={Settings} exact />
-          <Route path="/start/:difficulty/:category/:amount" component={Quiz}/>
-          <Route path="/detailed-result" component={QuizDetailedResult}/>
+          <Route path="/start" component={Quiz} />
+          <Route path="/detailed-result" component={QuizDetailedResult} />
         </Switch>
 
         <footer className="footer">

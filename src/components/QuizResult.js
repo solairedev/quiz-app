@@ -23,11 +23,14 @@ class QuizResult extends Component {
       state: {title: 'Settings'},
     });
   }
-  redirectToDetailedResult(){
-    this.props.redirectToDetailedResultAction()
+  redirectToDetailedResult() {
+    this.props.history.push({
+      pathname: '/detailed-result',
+    });
   }
   render() {
-    const {amount, questionsResult} = this.state;
+    const {questionsResult} = this.state;
+    const amount = questionsResult.length;
     const modalState = this.state.modalState ? 'modal--active' : '';
     var score = 0;
     questionsResult.forEach((item, key) => {
@@ -44,9 +47,7 @@ class QuizResult extends Component {
           <p className="text-center">
             Score: {score} / {amount}
           </p>
-          <p className="text-center">
-            Percent Score: {percentScore}%
-          </p>
+          <p className="text-center">Percent Score: {percentScore}%</p>
           <div className="modal__action">
             <button
               onClick={this.handleClick}

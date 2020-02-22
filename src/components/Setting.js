@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router';
+import {connect} from 'react-redux';
+import {setSettings} from '../actions/settings';
 
 class Settings extends Component {
   constructor(props) {
@@ -10,23 +12,24 @@ class Settings extends Component {
           ? this.props.location.state.title
           : 'Welcome!'
         : 'Welcome!',
-      amount: 10,
-      category: 'any',
-      difficulty: 'any',
+      amount: this.props.settings.amount,
+      category: this.props.settings.category,
+      difficulty: this.props.settings.difficulty,
     };
 
     this.formSubmit = this.formSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
   formSubmit() {
-    this.props.history.push(
-      '/start/' +
-        this.state.difficulty +
-        '/' +
-        this.state.category +
-        '/' +
-        this.state.amount,
-    );
+    const settings =  {
+      amount: this.state.amount,
+      category: this.state.category,
+      difficulty: this.state.difficulty,
+    }
+
+    this.props.setStateAction(settings);
+
+    this.props.history.push('/start/');
   }
   handleInputChange(event) {
     const target = event.target;
@@ -112,6 +115,19 @@ class Settings extends Component {
   }
 }
 
-const SettingsWithRouter = withRouter(Settings);
+const mapStateToProps = state => {
+  return {
+    settings: state.settings,
+  };
+};
 
-export default SettingsWithRouter;
+const mapDispatchToProps = dispatch => {
+  return {
+    setStateAction: settings => dispatch(setSettings(settings)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withRouter(Settings));

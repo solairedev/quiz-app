@@ -2,57 +2,33 @@ import React, {Component} from 'react';
 import {withRouter} from 'react-router';
 import QuizAnswer from './QuizAnswer';
 import decode_text from './../utilities/decode';
-import idToCategoryName from './../utilities/idToCategoryName'
+import idToCategoryName from './../utilities/idToCategoryName';
+import {connect} from 'react-redux';
 
 class QuizDetailedResult extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      amount: this.props.location.state
-        ? this.props.location.state.amount
-          ? this.props.location.state.amount
-          : null
-        : null,
-      category: this.props.location.state
-        ? this.props.location.state.category
-          ? this.props.location.state.category
-          : null
-        : null,
-      difficulty: this.props.location.state
-        ? this.props.location.state.difficulty
-          ? this.props.location.state.difficulty
-          : null
-        : null,
-      questionsResult: this.props.location.state
-        ? this.props.location.state.questionsResult
-          ? this.props.location.state.questionsResult
-          : null
-        : null,
-    };
+    this.state = {};
 
-    this.playAgain = this.playAgain.bind(this)
-    this.redirectToSettingsPage = this.redirectToSettingsPage.bind(this)
+    this.playAgain = this.playAgain.bind(this);
+    this.redirectToSettingsPage = this.redirectToSettingsPage.bind(this);
   }
-  playAgain(){
-    this.props.history.push(
-      '/start/' +
-        this.state.difficulty +
-        '/' +
-        this.state.category +
-        '/' +
-        this.state.amount,
-    );
+  playAgain() {
+    this.props.history.push('/start/');
   }
-  redirectToSettingsPage(){
+  redirectToSettingsPage() {
     this.props.history.push({
       pathname: '/',
       state: {title: 'Settings'},
     });
   }
   render() {
-    const {amount, category, difficulty} = this.state;
+    const {amount, category, difficulty} = this.props.settings;
     var score = 0;
-    this.state.questionsResult.forEach((item, key) => {
+
+    const questions = this.props.questions.questions;
+
+    questions.forEach((item, key) => {
       if (item.correct_answer === item.userAnswer) {
         score += 1;
       }
@@ -65,9 +41,9 @@ class QuizDetailedResult extends Component {
           <div className="quiz__wrap">
             <div className="quiz__header">
               <p className="quiz__title">Detailed Result</p>
-              <div class="quiz__meta-list">
+              <div className="quiz__meta-list">
                 <p className="quiz__meta quiz__meta-list-item quiz__meta--mb">
-                  Category: 	&laquo;{idToCategoryName(category)}&raquo;
+                  Category: &laquo;{idToCategoryName(category)}&raquo;
                 </p>
                 <p className="quiz__meta quiz__meta-list-item quiz__meta--mb">
                   Difficulty: {difficulty}
@@ -81,14 +57,11 @@ class QuizDetailedResult extends Component {
           </div>
         </div>
 
-        {this.state.questionsResult.map(question => (
-          <div className="quiz quiz--mt-sm">
+        {questions.map(question => (
+          <div key={question.question} className="quiz quiz--mt-sm">
             <div className="quiz__wrap">
               <div className="quiz__header quiz__header--result">
                 <p className="quiz__title">{decode_text(question.question)}</p>
-                {/* <p className="quiz__meta"> */}
-                {/*   Your answer is valid  */}
-                {/* </p> */}
               </div>
               <div className="quiz__answer-list">
                 {question.incorrect_answers.map(el => (
@@ -110,7 +83,7 @@ class QuizDetailedResult extends Component {
           </div>
         ))}
 
-        <div class="text-center">
+        <div className="text-center">
           <button
             onClick={this.playAgain}
             className="btn btn--margin btn--accent">
@@ -130,4 +103,14 @@ class QuizDetailedResult extends Component {
 
 const QuizDetailedResultWithRouter = withRouter(QuizDetailedResult);
 
-export default QuizDetailedResultWithRouter;
+const mapStateToProps = store => {
+  return {
+    settings: store.settings,
+    questions: store.questions,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null,
+)(QuizDetailedResultWithRouter);
