@@ -20,7 +20,8 @@ class Settings extends Component {
     this.formSubmit = this.formSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
-  formSubmit() {
+  formSubmit(e) {
+    e.preventDefault();
     const settings =  {
       amount: this.state.amount,
       category: this.state.category,
@@ -29,7 +30,7 @@ class Settings extends Component {
 
     this.props.setStateAction(settings);
 
-    this.props.history.push('/start/');
+    this.props.history.push('/start');
   }
   handleInputChange(event) {
     const target = event.target;
