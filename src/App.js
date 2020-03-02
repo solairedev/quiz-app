@@ -8,7 +8,7 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
+    <Router basename={'/src/quiz-app'}>
       <div className="container">
         <Switch>
           <Route path="/" component={Settings} exact />

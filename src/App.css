@@ -41,6 +41,7 @@ a:focus {
 .btn--accent:not([disabled]):focus {
   border-color: #0054a5;
   background: #0054a5;
+  outline: none;
 }
 .container {
   max-width: 900px;
