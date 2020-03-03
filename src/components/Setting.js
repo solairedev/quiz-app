@@ -53,7 +53,7 @@ class Settings extends Component {
           <input
             type="number"
             id="trivia_amount"
-            min="1"
+            min="2"
             max="50"
             name="amount"
             required
