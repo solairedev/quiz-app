@@ -6,6 +6,13 @@ Demo: https://solairedev.space/src/quiz-app/
 * View short result (mark)
 * View detailed result (mark, result of each question) 
 
+## Run
+
+~~~
+$ npm i 
+$ npm start 
+~~~
+
 ## Screenshots
 
 ![SETTINGS](screenshots/settings.png)
