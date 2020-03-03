@@ -56,6 +56,7 @@ class Settings extends Component {
             min="1"
             max="50"
             name="amount"
+            required
             value={this.state.amount}
             onChange={this.handleInputChange}
           />
